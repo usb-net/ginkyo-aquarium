@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>銀京湾水族館 — Ginkyo Bay Aquarium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Serif JP',serif;background:#f7f5f0;color:#1e2a2a;font-size:14px;line-height:1.8;}
+a{color:inherit;text-decoration:none;}
+.site{max-width:680px;margin:0 auto;background:#fff;}
+nav{background:#0d2535;display:flex;justify-content:space-between;align-items:center;padding:0 20px;height:52px;position:sticky;top:0;z-index:10;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:0.25em;color:rgba(255,255,255,0.85);font-style:italic;}
+.nav-links{display:flex;}
+.nav-links a{font-size:10px;letter-spacing:0.12em;color:rgba(255,255,255,0.5);padding:0 8px;line-height:52px;}
+.nav-links a:hover{color:rgba(255,255,255,0.9);}
+.nav-ticket{background:#2a6680;color:rgba(255,255,255,0.9)!important;}
+.hero{position:relative;height:340px;background:linear-gradient(160deg,#0a1e2e 0%,#0d2d42 35%,#1a4a62 65%,#1f5c78 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bubbles span{position:absolute;border-radius:50%;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.07);}
+.hero-badge{font-size:10px;letter-spacing:0.3em;color:rgba(255,255,255,0.45);margin-bottom:20px;border:0.5px solid rgba(255,255,255,0.15);padding:4px 16px;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;font-style:italic;color:rgba(255,255,255,0.9);letter-spacing:0.1em;margin-bottom:8px;}
+.hero-title-ja{font-size:13px;letter-spacing:0.35em;color:rgba(255,255,255,0.45);margin-bottom:28px;}
+.hero-hours{background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.12);padding:10px 24px;text-align:center;}
+.hero-hours-label{font-size:9px;letter-spacing:0.25em;color:rgba(255,255,255,0.4);margin-bottom:4px;}
+.hero-hours-time{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(255,255,255,0.85);}
+.hero-hours-note{font-size:9px;color:rgba(255,255,255,0.35);margin-top:3px;}
+.sec{padding:36px 32px;border-bottom:0.5px solid #e8e4dc;}
+.sec:last-child{border-bottom:none;}
+.sec-en{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:#2a6680;margin-bottom:4px;}
+.sec-ja{font-size:10px;letter-spacing:0.25em;color:#8a8070;margin-bottom:20px;}
+.body-text{font-size:12px;color:#3a3830;line-height:2.1;}
+.about-inner{display:flex;gap:20px;align-items:flex-start;}
+.about-img{width:180px;height:120px;background:linear-gradient(135deg,#0d2535,#1f5068);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.about-img-text{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;font-style:italic;color:rgba(255,255,255,0.2);letter-spacing:0.1em;}
+.more-link{display:inline-block;margin-top:12px;font-size:10px;letter-spacing:0.2em;color:#2a6680;border-bottom:0.5px solid #2a6680;padding-bottom:2px;}
+.floor-list{display:flex;flex-direction:column;}
+.floor-item{display:flex;gap:0;border-bottom:0.5px solid #e8e4dc;}
+.floor-item:last-child{border-bottom:none;}
+.floor-num{width:56px;flex-shrink:0;padding:18px 0;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#2a6680;text-align:center;}
+.floor-body{padding:16px 0 16px 16px;border-left:0.5px solid #e8e4dc;flex:1;}
+.floor-name{font-size:13px;font-weight:500;color:#1e2a2a;letter-spacing:0.08em;margin-bottom:5px;}
+.floor-desc{font-size:11px;color:#5a5650;line-height:1.9;}
+.floor-tag{display:inline-block;font-size:9px;background:#e4eff5;color:#2a6680;padding:2px 8px;border-radius:2px;margin-top:6px;margin-right:4px;}
+.floor-tag.dark{background:#1e3545;color:rgba(255,255,255,0.6);}
+.floor-tag.ex{background:#3a2a1a;color:rgba(255,220,160,0.9);}
+.section-sub{font-size:11px;letter-spacing:0.15em;color:#2a6680;margin-bottom:12px;margin-top:24px;padding-bottom:6px;border-bottom:0.5px solid #e8e4dc;}
+.animals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#e8e4dc;border:0.5px solid #e8e4dc;border-radius:4px;overflow:hidden;margin-bottom:16px;}
+.animal-card{background:#fff;padding:14px 12px;text-align:center;}
+.animal-card.space{background:#f4f1f8;}
+.animal-icon{font-size:20px;margin-bottom:6px;}
+.animal-name{font-size:11px;color:#1e2a2a;letter-spacing:0.08em;margin-bottom:3px;}
+.animal-note{font-size:10px;color:#8a8070;line-height:1.6;}
+.animal-badge{display:inline-block;font-size:8px;background:#1e3545;color:rgba(255,255,255,0.65);padding:1px 6px;border-radius:2px;margin-top:4px;}
+.animal-badge.ex{background:#3a2a1a;color:rgba(255,220,160,0.9);}
+.topics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.topic-card{border:0.5px solid #e8e4dc;border-radius:4px;padding:16px;}
+.topic-card-en{font-family:'Cormorant Garamond',serif;font-size:10px;font-style:italic;color:#8a8070;margin-bottom:4px;letter-spacing:0.15em;}
+.topic-card-name{font-size:12px;color:#1e2a2a;letter-spacing:0.08em;margin-bottom:6px;}
+.topic-card-desc{font-size:10px;color:#6a6560;line-height:1.8;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.menu-card{border:0.5px solid #e8e4dc;border-radius:4px;padding:14px;}
+.menu-cat{font-size:9px;letter-spacing:0.2em;color:#8a8070;margin-bottom:6px;}
+.menu-list{font-size:11px;color:#3a3830;line-height:2.2;}
+.menu-list li{list-style:none;border-bottom:0.5px solid #f0ede7;padding:2px 0;}
+.menu-list li:last-child{border-bottom:none;}
+.souvenir-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;}
+.souvenir-item{background:#f4f1eb;border-radius:4px;padding:10px 12px;font-size:11px;color:#3a3830;text-align:center;line-height:1.7;}
+.souvenir-icon{font-size:18px;margin-bottom:4px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;}
+.info-label{font-size:10px;letter-spacing:0.2em;color:#8a8070;margin-bottom:5px;}
+.info-value{font-size:12px;color:#2a2a28;line-height:1.8;}
+.notice{background:#eef3f6;border-radius:4px;padding:14px 16px;font-size:11px;color:#4a5860;line-height:2;margin-top:16px;}
+footer{background:#0d2535;padding:28px 32px;}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;font-style:italic;color:rgba(255,255,255,0.6);letter-spacing:0.2em;margin-bottom:16px;}
+.footer-links{display:flex;flex-wrap:wrap;margin-bottom:16px;}
+.footer-links a{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:0.1em;padding:2px 12px 2px 0;}
+.footer-copy{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.1em;}
+</style>
+</head>
+<body>
+<div class="site">
+<nav>
+  <div class="nav-logo">Ginkyo Bay Aquarium</div>
+  <div class="nav-links">
+    <a href="#">館内ガイド</a>
+    <a href="#">生きもの</a>
+    <a href="#">レストラン</a>
+    <a href="#">アクセス</a>
+    <a href="#" class="nav-ticket">チケット購入</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="hero-bubbles">
+    <span style="width:140px;height:140px;top:30px;left:30px;"></span>
+    <span style="width:60px;height:60px;top:80px;right:60px;"></span>
+    <span style="width:220px;height:220px;bottom:-80px;right:-60px;"></span>
+    <span style="width:45px;height:45px;top:160px;left:200px;"></span>
+  </div>
+  <div class="hero-badge">2026 SUMMER — 深海の光　特別展示開催中</div>
+  <div class="hero-title">Ginkyo Bay Aquarium</div>
+  <div class="hero-title-ja">銀 京 湾 水 族 館</div>
+  <div class="hero-hours">
+    <div class="hero-hours-label">本日の営業時間</div>
+    <div class="hero-hours-time">09:00 — 18:00</div>
+    <div class="hero-hours-note">最終入場 17:00　／　ナイト水族館（金土祝前）〜 21:00</div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sec-en">About</div>
+  <div class="sec-ja">銀京湾水族館とは</div>
+  <div class="about-inner">
+    <div class="about-img"><div class="about-img-text">Aqua</div></div>
+    <div>
+      <div class="body-text">銀京湾水族館は、銀京府新如月区臨海に位置する水族館です。銀京湾の生態系から深海の神秘、宇宙各地から収集した希少生物まで、命の多様な姿を静かにご覧いただける空間をご用意しています。強化人間・サイボーグを問わず、すべてのお客さまに開かれた施設です。</div>
+      <a href="#" class="more-link">水族館コンセプトをみる</a>
+    </div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sec-en">Floor Guide</div>
+  <div class="sec-ja">館内案内</div>
+  <div class="floor-list">
+    <div class="floor-item">
+      <div class="floor-num">入口</div>
+      <div class="floor-body">
+        <div class="floor-name">エントランス　／　プロジェクションマッピング</div>
+        <div class="floor-desc">緩やかな坂道を下るにつれ照明が落ち、入館と同時に足元に水面のプロジェクションマッピングが広がります。歩くたびに水紋が生まれ、足元を小さなホタルイカが光りながら泳いでいきます。入場証として青い光石をあしらったブレスレットをお貸し出しています。</div>
+        <span class="floor-tag dark">撮影スポット</span>
+        <span class="floor-tag">スタンプラリー受付</span>
+      </div>
+    </div>
+    <div class="floor-item">
+      <div class="floor-num">B1</div>
+      <div class="floor-body">
+        <div class="floor-name">深海ゾーン　／　発光生物・クラゲスコープ</div>
+        <div class="floor-desc">照明を極限まで落とした深海エリア。ホシクラゲやミズクラゲが青白い光を放ちながら漂うクラゲスコープは、カップルや写真撮影を楽しむお客さまに人気のエリアです。未知なる深海コーナーではブロブフィッシュ・デメニギス・チョウチンアンコウ・ダイオウグソクムシなどの珍しい深海生物もご覧いただけます。</div>
+        <span class="floor-tag dark">撮影スポット</span>
+        <span class="floor-tag dark">夏季特別展示中</span>
+        <span class="floor-tag">スタンプあり</span>
+      </div>
+    </div>
+    <div class="floor-item">
+      <div class="floor-num">1F</div>
+      <div class="floor-body">
+        <div class="floor-name">銀京湾ゾーン　／　回遊大水槽・サンゴ礁</div>
+        <div class="floor-desc">全長18mの回遊大水槽トンネルではギンリュウやオオメジロザメ類が頭上を泳ぎます。サンゴ礁エリアではカクレクマノミ・チンアナゴ・ルリスズメダイなど色鮮やかな生物を間近でご覧いただけます。金魚リウムでは幻想的な照明に照らされた金魚たちをお楽しみください。</div>
+        <span class="floor-tag">トンネル水槽</span>
+        <span class="floor-tag">金魚リウム</span>
+        <span class="floor-tag">スタンプあり</span>
+      </div>
+    </div>
+    <div class="floor-item">
+      <div class="floor-num">2F</div>
+      <div class="floor-body">
+        <div class="floor-name">宇宙生物ゾーン　／　触れ合いプール・深海プラネタリウム</div>
+        <div class="floor-desc">宇宙各地から収集した当館独占展示の希少生物ゾーン。触れ合いプールではホシクラゲやヒトデに触れることができます。サラマンダーウーパールーパーは特殊耐熱強化ガラス越しでのご観覧となります。深海プラネタリウムでは宇宙と深海の映像を組み合わせた上映をお楽しみいただけます（上映約20分）。</div>
+        <span class="floor-tag">触れ合い体験</span>
+        <span class="floor-tag">プラネタリウム</span>
+        <span class="floor-tag ex">当館独占展示</span>
+        <span class="floor-tag">スタンプあり</span>
+      </div>
+    </div>
+    <div class="floor-item">
+      <div class="floor-num">3F</div>
+      <div class="floor-body">
+        <div class="floor-name">海獣エリア　／　アズールペンギン・ゴマフアザラシ</div>
+        <div class="floor-desc">アズールペンギンのお散歩タイムは毎日11時・14時の二回開催。ゴマフアザラシとの触れ合い・餌やり体験も人気です。新種の魚への命名体験コーナーも設置しています（参加無料）。</div>
+        <span class="floor-tag">ペンギンお散歩</span>
+        <span class="floor-tag">餌やり体験</span>
+        <span class="floor-tag ex">当館独占展示</span>
+        <span class="floor-tag">スタンプあり</span>
+      </div>
+    </div>
+    <div class="floor-item">
+      <div class="floor-num">RF</div>
+      <div class="floor-body">
+        <div class="floor-name">屋上デッキ　／　湾岸食堂・しおかぜ</div>
+        <div class="floor-desc">銀京湾を一望できる屋上デッキ。レストラン「湾岸食堂」では地元漁師直仕入れの海鮮丼や吸引式メニューをお楽しみいただけます。土産物店「しおかぜ」も併設。スタンプラリーの景品引き換えもこちらで行っています。</div>
+        <span class="floor-tag">海鮮丼</span>
+        <span class="floor-tag">吸引式メニューあり</span>
+        <span class="floor-tag">土産物店</span>
+        <span class="floor-tag">景品引換</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sec-en">Experience</div>
+  <div class="sec-ja">体験・イベント</div>
+  <div class="topics-grid">
+    <div class="topic-card">
+      <div class="topic-card-en">Stamp Rally</div>
+      <div class="topic-card-name">スタンプラリー</div>
+      <div class="topic-card-desc">館内6か所のスタンプを集めると屋上RFで景品と交換できます。全スタンプ達成でオリジナルクリアファイルをプレゼント。</div>
+    </div>
+    <div class="topic-card">
+      <div class="topic-card-en">Touch Pool</div>
+      <div class="topic-card-name">触れ合いプール</div>
+      <div class="topic-card-desc">2Fでホシクラゲ・ヒトデ・ナマコなどに触れることができます。大型機械義肢をお持ちのお客さまは一部ご遠慮いただく場合があります。</div>
+    </div>
+    <div class="topic-card">
+      <div class="topic-card-en">Penguin Walk</div>
+      <div class="topic-card-name">ペンギンお散歩タイム</div>
+      <div class="topic-card-desc">アズールペンギンが館内を歩きます。毎日11時・14時開催。お散歩ルート沿いで間近に見ることができます。</div>
+    </div>
+    <div class="topic-card">
+      <div class="topic-card-en">Naming</div>
+      <div class="topic-card-name">新種命名体験</div>
+      <div class="topic-card-desc">宇宙から新たに収集した未命名の魚に名前を付けることができます。採用された名前は水槽の解説プレートに掲示されます。</div>
+    </div>
+    <div class="topic-card">
+      <div class="topic-card-en">Doctor Fish</div>
+      <div class="topic-card-name">ドクターフィッシュ体験</div>
+      <div class="topic-card-desc">手や腕の古い角質をお魚に食べてもらう体験です。サイボーグ・強化人間のお客さまも体験いただけます（皮膚面積によります）。</div>
+    </div>
+    <div class="topic-card">
+      <div class="topic-card-en">Night Aquarium</div>
+      <div class="topic-card-name">ナイト水族館</div>
+      <div class="topic-card-desc">金・土・祝前日限定、21時まで営業。照明を落とした幻想的な館内で昼とは異なる生物たちの姿をお楽しみください。</div>
+    </div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sec-en">Animals</div>
+  <div class="sec-ja">生きものたち</div>
+  <div class="section-sub">銀京湾・深海の生きもの</div>
+  <div class="animals-grid">
+    <div class="animal-card"><div class="animal-icon">🦈</div><div class="animal-name">オオメジロザメ類</div><div class="animal-note">回遊水槽の主役</div></div>
+    <div class="animal-card"><div class="animal-icon">🐟</div><div class="animal-name">ギンリュウ</div><div class="animal-note">銀京湾固有の大型回遊魚</div><div class="animal-badge ex">当館独占展示</div></div>
+    <div class="animal-card"><div class="animal-icon">🐠</div><div class="animal-name">カクレクマノミ</div><div class="animal-note">珊瑚礁ゾーンの人気者</div></div>
+    <div class="animal-card"><div class="animal-icon">🐡</div><div class="animal-name">チンアナゴ</div><div class="animal-note">砂から顔を出す姿が人気</div></div>
+    <div class="animal-card"><div class="animal-icon">🐟</div><div class="animal-name">ブロブフィッシュ</div><div class="animal-note">深海の珍客</div></div>
+    <div class="animal-card"><div class="animal-icon">🐟</div><div class="animal-name">デメニギス</div><div class="animal-note">透明な頭部に管状眼</div></div>
+    <div class="animal-card"><div class="animal-icon">🦑</div><div class="animal-name">ホタルイカ類</div><div class="animal-note">深海の発光展示に登場</div></div>
+    <div class="animal-card"><div class="animal-icon">🦀</div><div class="animal-name">ダイオウグソクムシ</div><div class="animal-note">深海の大型甲殻類</div></div>
+    <div class="animal-card"><div class="animal-icon">🐙</div><div class="animal-name">メンダコ</div><div class="animal-note">耳のような鰭が愛らしい</div></div>
+    <div class="animal-card"><div class="animal-icon">🦈</div><div class="animal-name">ラブカ</div><div class="animal-note">深海のサメ</div></div>
+    <div class="animal-card"><div class="animal-icon">🐟</div><div class="animal-name">リュウグウノツカイ</div><div class="animal-note">長大な銀色の体</div></div>
+    <div class="animal-card"><div class="animal-icon">🦭</div><div class="animal-name">ゴマフアザラシ</div><div class="animal-note">餌やり体験あり</div></div>
+  </div>
+  <div class="section-sub">宇宙由来の生きもの　—　当館独占展示</div>
+  <div class="animals-grid">
+    <div class="animal-card space"><div class="animal-icon">✨</div><div class="animal-name">ホシクラゲ</div><div class="animal-note">星屑のように発光。触れ合いプールで体験可能</div><div class="animal-badge ex">触れ合い可</div></div>
+    <div class="animal-card space"><div class="animal-icon">🦀</div><div class="animal-name">コウセキガニ</div><div class="animal-note">甲羅に宝石状の鉱石を背負う</div><div class="animal-badge ex">当館独占展示</div></div>
+    <div class="animal-card space"><div class="animal-icon">🦎</div><div class="animal-name">サラマンダーウーパールーパー</div><div class="animal-note">火山惑星出身。特殊耐熱強化ガラス越し観覧</div><div class="animal-badge ex">当館独占展示</div></div>
+    <div class="animal-card space"><div class="animal-icon">🐧</div><div class="animal-name">アズールペンギン</div><div class="animal-note">氷の惑星出身。深い藍色の羽毛</div><div class="animal-badge ex">当館独占展示</div></div>
+    <div class="animal-card space"><div class="animal-icon">🪼</div><div class="animal-name">発光クラゲ</div><div class="animal-note">深海ゾーンで青白く輝く</div></div>
+    <div class="animal-card space"><div class="animal-icon">⭐</div><div class="animal-name">ヒトデ類</div><div class="animal-note">触れ合いプールで体験できる</div></div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sec-en">Restaurant & Shop</div>
+  <div class="sec-ja">レストラン・土産物店</div>
+  <div class="body-text" style="margin-bottom:16px;">屋上RF「湾岸食堂」および館内カフェ「人魚の隠れ家」では、海をテーマにしたフードとドリンクをご提供しています。吸引式メニューも全品ご用意しています。</div>
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="menu-cat">フード</div>
+      <ul class="menu-list">
+        <li>海鮮丼（湾岸食堂）</li>
+        <li>アザラシのぐっすりオムライス</li>
+        <li>ジンベエザメのパイシチュー</li>
+        <li>メンダコバーガー</li>
+        <li>熱帯魚のカラフルサラダ</li>
+        <li>チンアナゴチュロス</li>
+      </ul>
+    </div>
+    <div class="menu-card">
+      <div class="menu-cat">ドリンク・デザート</div>
+      <ul class="menu-list">
+        <li>クラゲのゼリーソーダ</li>
+        <li>ひんやりペンギンフロート</li>
+        <li>シャチのブラック&ホワイトパフェ</li>
+        <li>ラッコの雪見大福</li>
+        <li>金魚焼き</li>
+        <li>ホシクラゲゼリー（数量限定）</li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-sub" style="margin-top:24px;">土産物店「しおかぜ」</div>
+  <div class="souvenir-grid">
+    <div class="souvenir-item"><div class="souvenir-icon">🪼</div>クラゲ風鈴<br>クラゲピアス</div>
+    <div class="souvenir-item"><div class="souvenir-icon">🧸</div>ぬいぐるみ<br>抱き枕</div>
+    <div class="souvenir-item"><div class="souvenir-icon">🔬</div>透明標本<br>しおり</div>
+    <div class="souvenir-item"><div class="souvenir-icon">🍪</div>クッキー<br>チョコレート</div>
+    <div class="souvenir-item"><div class="souvenir-icon">👕</div>Tシャツ<br>パジャマ</div>
+    <div class="souvenir-item"><div class="souvenir-icon">🎪</div>ウミウシ帽子<br>1000円くじ</div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sec-en">Information</div>
+  <div class="sec-ja">ご来館案内</div>
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-label">開館時間</div>
+      <div class="info-value">午前九時〜午後六時<br><span style="font-size:11px;color:#8a8070;">ナイト水族館は午後九時まで</span></div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">休館日</div>
+      <div class="info-value">毎週火曜日<br><span style="font-size:11px;color:#8a8070;">祝日の場合は翌平日</span></div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">入館料</div>
+      <div class="info-value">大人　壱千八百圓<br>小人　九百圓</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">アクセス</div>
+      <div class="info-value">銀京府新如月区臨海一丁目二番地<br>新如月駅より徒歩十二分</div>
+    </div>
+  </div>
+  <div class="notice">
+    ・強化人間・サイボーグのお客さまも通常料金でご入場いただけます。<br>
+    ・館内は撮影自由です。フラッシュ撮影はご遠慮ください。<br>
+    ・吸引式飲食物は館内の一部エリアでお召し上がりいただけます。<br>
+    ・大型機械義肢をお持ちのお客さまは、触れ合いプールの一部エリアへの立ち入りをご遠慮いただく場合がございます。
+  </div>
+</div>
+<footer>
+  <div class="footer-logo">Ginkyo Bay Aquarium</div>
+  <div class="footer-links">
+    <a href="#">営業時間・料金</a>
+    <a href="#">館内ガイド</a>
+    <a href="#">生きもの</a>
+    <a href="#">レストラン</a>
+    <a href="#">アクセス</a>
+    <a href="#">団体利用</a>
+    <a href="#">よくある質問</a>
+    <a href="#">お問合せ</a>
+  </div>
+  <div class="footer-copy">銀京府新如月区臨海一丁目二番地　／　Copyright © Ginkyo Bay Aquarium All rights reserved.</div>
+</footer>
+</div>
+</body>
+</html>
