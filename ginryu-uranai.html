@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ノイズ占い</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #020c14;
+    --deep: #041a28;
+    --panel: #061e2e;
+    --border: #0a3a5a;
+    --accent: #00c8ff;
+    --accent2: #7fffd4;
+    --silver: #c8dce8;
+    --dim: #3a6070;
+    --text: #d0eaf5;
+    --glow: 0 0 18px rgba(0,200,255,0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Shippori Mincho', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+  }
+
+  /* 背景の魚群エフェクト */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,80,120,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(0,40,80,0.3) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fish-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .fish {
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0.08;
+    animation: swim linear infinite;
+    filter: blur(0.5px);
+  }
+
+  @keyframes swim {
+    from { transform: translateX(-60px) translateY(0px); }
+    25% { transform: translateX(25vw) translateY(-20px); }
+    50% { transform: translateX(50vw) translateY(10px); }
+    75% { transform: translateX(75vw) translateY(-15px); }
+    to { transform: translateX(calc(100vw + 60px)) translateY(5px); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .header {
+    text-align: center;
+    letter-spacing: 0.15em;
+  }
+
+  .header-en {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--silver);
+    text-shadow: var(--glow);
+    line-height: 1.3;
+  }
+
+  .header h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 0.7rem;
+    color: var(--dim);
+    margin-top: 0.6rem;
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+  }
+
+  /* 占いパネル */
+  .oracle-panel {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .oracle-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* 結果表示エリア */
+  .result-area {
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    padding: 1rem;
+  }
+
+  .result-icon {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 12px rgba(0,200,255,0.5));
+    transition: all 0.3s ease;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .result-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 10px rgba(127,255,212,0.4);
+  }
+
+  .result-divider {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .result-meaning {
+    font-size: 0.95rem;
+    color: var(--silver);
+    text-align: center;
+    line-height: 2;
+    letter-spacing: 0.05em;
+    max-width: 320px;
+  }
+
+  .result-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0.35;
+  }
+
+  .result-placeholder .ph-icon {
+    font-size: 3rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  .result-placeholder .ph-text {
+    font-size: 0.75rem;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ボタン */
+  .btn-oracle {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-oracle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    opacity: 0.08;
+  }
+
+  .btn-oracle:hover::before {
+    transform: translateX(0);
+  }
+
+  .btn-oracle:hover {
+    box-shadow: var(--glow);
+    letter-spacing: 0.4em;
+  }
+
+  .btn-oracle:active {
+    opacity: 0.7;
+    transform: scale(0.99);
+  }
+
+  .btn-oracle.loading {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* スキャンライン */
+  .scanline {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,200,255,0.3), transparent);
+    animation: scan 2s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scan {
+    from { top: 0; opacity: 1; }
+    to { top: 100%; opacity: 0; }
+  }
+
+  /* 履歴 */
+  .history {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .history-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  .history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .history-item {
+    font-size: 0.7rem;
+    color: var(--dim);
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+    font-family: 'Share Tech Mono', monospace;
+    transition: color 0.2s;
+  }
+
+  .history-item:hover {
+    color: var(--silver);
+  }
+
+  .footer-note {
+    font-size: 0.6rem;
+    color: var(--dim);
+    text-align: center;
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+    opacity: 0.6;
+  }
+
+  /* アニメーション */
+  .result-area.animating .result-icon {
+    animation: shake 0.4s ease, float 3s ease-in-out infinite 0.4s;
+  }
+
+  @keyframes shake {
+    0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+    50% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .result-area.animating .result-name,
+  .result-area.animating .result-meaning {
+    animation: fadein 0.5s ease 0.2s both;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="fish-bg" id="fishBg"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="header-en">NOISE ORACLE / GINKYO BAY AQUARIUM</div>
+    <h1>ノイズ<span>占</span>い</h1>
+    <div class="header-sub">
+      銀京湾固有種・ギンリュウの群れが放つ電磁場により<br>
+      お手持ちの電子機器に発生したノイズを読み取り<br>
+      結果を映します
+    </div>
+  </div>
+
+  <div class="oracle-panel">
+    <div class="scanline"></div>
+
+    <div class="result-area" id="resultArea">
+      <div class="result-placeholder">
+        <div class="ph-icon">🐟</div>
+        <div class="ph-text">WAITING FOR SIGNAL...</div>
+      </div>
+    </div>
+
+    <button class="btn-oracle" id="btnOracle" onclick="doOracle()">
+      ― 占う ―
+    </button>
+  </div>
+
+  <div class="history" id="historySection" style="display:none">
+    <div class="history-label">RECENT READINGS</div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+
+  <div class="footer-note">
+    ※ ギンリュウの電磁場干渉は無害です<br>
+    ペースメーカー等の精密医療機器をお使いの方はご注意ください
+  </div>
+</div>
+
+<script>
+  const MOTIFS = [
+    { icon: '🌳', name: '木', meaning: '健康・回復の兆し。傷ついた身体や心が癒えていくことを示す。' },
+    { icon: '⬜', name: '四角', meaning: '安定・現状維持。今の場所に留まることが吉。' },
+    { icon: '🚀', name: '船（宇宙船）', meaning: '遠方への移動・惑星間の旅を示す。ぼやけていれば道中に注意。' },
+    { icon: '🫙', name: 'ピッチャー', meaning: '身体の調子が良い。エネルギーが満ちている。' },
+    { icon: '🐦', name: '鳥', meaning: '良い知らせが届く。遠くから朗報が来る。' },
+    { icon: '🪄', name: '馬蹄', meaning: '近しい人に幸運が訪れる。あなたの周囲が明るくなる。' },
+    { icon: '🐕', name: '犬', meaning: '信頼できる相手の存在を示す。傍にいる誰かを大切に。' },
+    { icon: '🔔', name: '鐘', meaning: '契約・誓約の予兆。重要な約束が結ばれる。' },
+    { icon: '🌌', name: '門・アーチ', meaning: '他の星系への渡航が吉。ぼやけていると宇宙航行中に災難の兆し。' },
+    { icon: '⚓', name: '錨', meaning: '仕事や愛情が安定する印。ぼやけていると逆効果なので注意。' },
+    { icon: '🍎', name: 'りんご', meaning: '良い仕事の機会が訪れる。準備を怠るな。' },
+    { icon: '🌉', name: '橋', meaning: '楽しい遠征・任務。ぼやけていると途中で終わる可能性。' },
+    { icon: '🔺', name: '三角', meaning: '予期せぬ幸運が訪れる。' },
+    { icon: '🍀', name: 'クローバー', meaning: '繁栄の兆し。物事が順調に進む好機。' },
+    { icon: '❤️', name: 'ハート', meaning: '愛情の暗示。底に近いほど深い関係。ぼやけていれば不安定な愛に注意。' },
+    { icon: '⚙️', name: '風車', meaning: '本業とは別の分野で成功する。新しい可能性が開く。' },
+    { icon: '⛪', name: '教会', meaning: '吉兆。安心して進んでよい。' },
+    { icon: '⭐', name: '星', meaning: '近い将来に幸運が訪れる。' },
+    { icon: '➡️', name: '矢印', meaning: '向いている方向から良い知らせ。ぼやけていれば悪い知らせの兆し。' },
+    { icon: '🗝️', name: '鍵', meaning: '問題が解決する・依頼が成功する。詰まっていたものが動き出す。' },
+    { icon: '🌕', name: '天体', meaning: '大きな幸運・成功。惑星が満ちる時、道が開ける。' },
+    { icon: '🪑', name: '椅子', meaning: '旧知の人物が訪ねてくる。懐かしい再会の予感。' },
+    { icon: '🏰', name: '城', meaning: '予期せぬ報酬が舞い込む。' },
+    { icon: '🍾', name: '瓶', meaning: '祝いごとの予兆。喜ばしい出来事が近い。' },
+    { icon: '✈️', name: '飛行機', meaning: '高速移動には十分な注意を。急ぎすぎると思わぬ失敗がある。' },
+    { icon: '🫖', name: 'やかん', meaning: '拠点・住居でのコミュニケーションを大切に。身近な人との対話が鍵。' },
+    { icon: '🍐', name: '梨', meaning: '金銭的に豊かな相手との縁が生まれる。' },
+  ];
+
+  let history = [];
+
+  // 魚群生成
+  const fishBg = document.getElementById('fishBg');
+  for (let i = 0; i < 12; i++) {
+    const fish = document.createElement('div');
+    fish.className = 'fish';
+    fish.textContent = '🐟';
+    fish.style.top = `${Math.random() * 100}%`;
+    fish.style.animationDuration = `${8 + Math.random() * 12}s`;
+    fish.style.animationDelay = `${-Math.random() * 15}s`;
+    fish.style.fontSize = `${0.8 + Math.random() * 1}rem`;
+    fishBg.appendChild(fish);
+  }
+
+  function doOracle() {
+    const btn = document.getElementById('btnOracle');
+    const area = document.getElementById('resultArea');
+
+    btn.classList.add('loading');
+    btn.textContent = '― 読み取り中 ―';
+
+    // ちらつきエフェクト
+    area.style.opacity = '0.3';
+
+    setTimeout(() => {
+      const motif = MOTIFS[Math.floor(Math.random() * MOTIFS.length)];
+
+      area.innerHTML = `
+        <div class="result-icon">${motif.icon}</div>
+        <div class="result-name">${motif.name}</div>
+        <div class="result-divider"></div>
+        <div class="result-meaning">${motif.meaning}</div>
+      `;
+
+      area.classList.remove('animating');
+      void area.offsetWidth;
+      area.classList.add('animating');
+      area.style.opacity = '1';
+
+      btn.classList.remove('loading');
+      btn.textContent = '― もう一度 ―';
+
+      // 履歴
+      history.unshift(motif.name);
+      if (history.length > 8) history.pop();
+      renderHistory();
+    }, 600);
+  }
+
+  function renderHistory() {
+    const section = document.getElementById('historySection');
+    const list = document.getElementById('historyList');
+    section.style.display = 'block';
+    list.innerHTML = history.map(n => `<div class="history-item">${n}</div>`).join('');
+  }
+</script>
+</body>
+</html>
