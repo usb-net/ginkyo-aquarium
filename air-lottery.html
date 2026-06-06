@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>くじびき | 銀京湾水族館</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #020c14;
+    --panel: #061e2e;
+    --border: #0a3a5a;
+    --accent: #00c8ff;
+    --gold: #ffd700;
+    --silver: #c8dce8;
+    --dim: #3a6070;
+    --text: #d0eaf5;
+    --glow: 0 0 18px rgba(0,200,255,0.4);
+    --gold-glow: 0 0 20px rgba(255,215,0,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Shippori Mincho', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,80,120,0.4) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .header { text-align: center; }
+
+  .header-en {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    opacity: 0.8;
+  }
+
+  .header h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--silver);
+    text-shadow: var(--glow);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+
+  .header-sub {
+    font-size: 0.68rem;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* ドーム型抽選器 */
+  .machine-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .dome-container {
+    width: 220px;
+    height: 180px;
+    position: relative;
+  }
+
+  /* ドーム（半円型アクリル） */
+  .dome {
+    width: 220px;
+    height: 140px;
+    border: 2px solid rgba(0,200,255,0.3);
+    border-bottom: none;
+    border-radius: 110px 110px 0 0;
+    background: linear-gradient(180deg, rgba(0,200,255,0.04) 0%, rgba(0,200,255,0.01) 100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(0,200,255,0.05), 0 0 20px rgba(0,200,255,0.1);
+  }
+
+  /* ドームの光沢 */
+  .dome::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 40px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+    border-radius: 50%;
+    transform: rotate(-20deg);
+  }
+
+  /* 台座 */
+  .base {
+    width: 240px;
+    height: 30px;
+    background: linear-gradient(180deg, #0a3a5a, #061e2e);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .base-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+  }
+
+  /* 風の線 */
+  .wind-line {
+    position: absolute;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(0,200,255,0.3), transparent);
+    animation: windFlow 0.25s linear infinite;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .wind-line.active { opacity: 1; }
+
+  @keyframes windFlow {
+    from { transform: translateY(100%); }
+    to { transform: translateY(-200%); }
+  }
+
+  /* 三角くじ */
+  .kuji {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 28px solid #cc2222;
+    cursor: default;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  }
+
+  .kuji::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-bottom: 24px solid #dd3333;
+    top: 4px;
+    left: -13px;
+  }
+
+  /* 開いたくじ */
+  .kuji-open {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    background: #cc2222;
+    transform: rotate(45deg);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  .kuji-open.show { display: flex; }
+
+  .kuji-open-inner {
+    transform: rotate(-45deg);
+    text-align: center;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  /* ボタン */
+  .btn-draw {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-draw:hover:not(:disabled) {
+    background: rgba(0,200,255,0.06);
+    box-shadow: var(--glow);
+  }
+
+  .btn-draw:disabled { opacity: 0.4; cursor: default; }
+
+  /* 結果 */
+  .result-area {
+    width: 100%;
+    min-height: 90px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 1.2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .result-area::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .result-waiting {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .result-prize { display: none; flex-direction: column; align-items: center; gap: 0.4rem; }
+  .result-prize.show { display: flex; animation: reveal 0.5s ease; }
+
+  @keyframes reveal {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .prize-rank {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.25em;
+    text-shadow: var(--gold-glow);
+  }
+
+  .prize-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--silver);
+  }
+
+  .btn-reset {
+    display: none;
+    padding: 0.7rem 2rem;
+    background: transparent;
+    border: 1px solid var(--dim);
+    color: var(--dim);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-reset.show { display: block; }
+
+  /* 景品一覧 */
+  .prizes-list {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1rem 1.2rem;
+  }
+
+  .prizes-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.8rem;
+  }
+
+  .prize-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(10,58,90,0.5);
+    font-size: 0.78rem;
+  }
+
+  .prize-item:last-child { border-bottom: none; }
+
+  .prize-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--gold);
+    flex-shrink: 0;
+    width: 2rem;
+  }
+
+  .prize-text { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="header-en">LUCKY DRAW / GINKYO BAY AQUARIUM</div>
+    <h1>くじびき</h1>
+    <div class="header-sub">ドームに手を入れて舞い上がるくじを掴んでください　1回 0.1円</div>
+  </div>
+
+  <div class="machine-wrap">
+    <div class="dome-container">
+      <div class="dome" id="dome"></div>
+      <div class="base"><span class="base-label">AIR LOTTERY</span></div>
+    </div>
+  </div>
+
+  <button class="btn-draw" id="btnDraw" onclick="startDraw()">― くじをひく ―</button>
+
+  <div class="result-area">
+    <div class="result-waiting" id="resultWaiting">WAITING...</div>
+    <div class="result-prize" id="resultPrize">
+      <div class="prize-rank" id="prizeRank"></div>
+      <div class="prize-name" id="prizeName"></div>
+    </div>
+  </div>
+
+  <button class="btn-reset" id="btnReset" onclick="resetDraw()">― もう一度 ―</button>
+
+  <div class="prizes-list">
+    <div class="prizes-title">PRIZE LIST</div>
+    <div class="prize-item"><span class="prize-label">A賞</span><span class="prize-text">サラマンダーオオサンショウウオ BIGぬいぐるみ</span></div>
+    <div class="prize-item"><span class="prize-label">B賞</span><span class="prize-text">コスモクジラ 抱き枕</span></div>
+    <div class="prize-item"><span class="prize-label">C賞</span><span class="prize-text">アズールペンギン XLぬいぐるみ</span></div>
+    <div class="prize-item"><span class="prize-label">D賞</span><span class="prize-text">シャチのパペットぬいぐるみ</span></div>
+    <div class="prize-item"><span class="prize-label">E賞</span><span class="prize-text">クラゲ風鈴</span></div>
+    <div class="prize-item"><span class="prize-label">F賞</span><span class="prize-text">LEDクラゲ卓上アクアリウム</span></div>
+    <div class="prize-item"><span class="prize-label">G賞</span><span class="prize-text">銀京湾水族館オリジナルパジャマ</span></div>
+    <div class="prize-item"><span class="prize-label">H賞</span><span class="prize-text">金魚のドロップ缶（金魚型砂糖菓子）</span></div>
+    <div class="prize-item"><span class="prize-label">I賞</span><span class="prize-text">チンアナゴチュロス引換券</span></div>
+    <div class="prize-item"><span class="prize-label">J賞</span><span class="prize-text">チンアナゴ・ニシキアナゴ くねくねペン</span></div>
+  </div>
+</div>
+
+<script>
+const PRIZES = [
+  { rank: 'A賞', name: 'サラマンダーオオサンショウウオ BIGぬいぐるみ' },
+  { rank: 'B賞', name: 'コスモクジラ 抱き枕' },
+  { rank: 'C賞', name: 'アズールペンギン XLぬいぐるみ' },
+  { rank: 'D賞', name: 'シャチのパペットぬいぐるみ' },
+  { rank: 'E賞', name: 'クラゲ風鈴' },
+  { rank: 'F賞', name: 'LEDクラゲ卓上アクアリウム' },
+  { rank: 'G賞', name: '銀京湾水族館オリジナルパジャマ' },
+  { rank: 'H賞', name: '金魚のドロップ缶' },
+  { rank: 'I賞', name: 'チンアナゴチュロス引換券' },
+  { rank: 'J賞', name: 'チンアナゴ・ニシキアナゴ くねくねペン' },
+];
+
+let animIntervals = [];
+
+function createKuji() {
+  const dome = document.getElementById('dome');
+  document.querySelectorAll('.kuji, .wind-line, .kuji-open').forEach(e => e.remove());
+
+  // 風の線
+  for (let i = 0; i < 6; i++) {
+    const line = document.createElement('div');
+    line.className = 'wind-line';
+    line.style.left = (15 + Math.random() * 70) + '%';
+    line.style.height = (30 + Math.random() * 50) + 'px';
+    line.style.animationDelay = (Math.random() * 0.25) + 's';
+    line.style.animationDuration = (0.2 + Math.random() * 0.15) + 's';
+    dome.appendChild(line);
+  }
+
+  // 三角くじを複数配置
+  for (let i = 0; i < 8; i++) {
+    const k = document.createElement('div');
+    k.className = 'kuji';
+    k.style.left = (20 + Math.random() * 140) + 'px';
+    k.style.top = (20 + Math.random() * 90) + 'px';
+    k.style.transform = `rotate(${Math.random() * 360}deg)`;
+    k.style.opacity = (0.6 + Math.random() * 0.4).toString();
+    dome.appendChild(k);
+  }
+}
+
+function startDraw() {
+  document.getElementById('btnDraw').disabled = true;
+  const dome = document.getElementById('dome');
+
+  // 風線を有効化
+  dome.querySelectorAll('.wind-line').forEach(l => l.classList.add('active'));
+
+  // くじをランダムに動かす
+  const kujis = dome.querySelectorAll('.kuji');
+  kujis.forEach(k => {
+    const iv = setInterval(() => {
+      k.style.left = (10 + Math.random() * 150) + 'px';
+      k.style.top = (5 + Math.random() * 110) + 'px';
+      k.style.transform = `rotate(${Math.random() * 360}deg)`;
+    }, 120);
+    animIntervals.push(iv);
+  });
+
+  // 2秒後に結果
+  setTimeout(() => {
+    animIntervals.forEach(iv => clearInterval(iv));
+    animIntervals = [];
+    dome.querySelectorAll('.wind-line').forEach(l => l.classList.remove('active'));
+
+    // くじを一枚だけ中央に止める（開く演出）
+    kujis.forEach((k, i) => {
+      if (i === 0) {
+        k.style.left = '88px';
+        k.style.top = '50px';
+        k.style.transform = 'rotate(0deg)';
+        k.style.transition = 'all 0.3s ease';
+      } else {
+        k.style.opacity = '0.2';
+      }
+    });
+
+    setTimeout(() => {
+      const prize = PRIZES[Math.floor(Math.random() * PRIZES.length)];
+      // 開いたくじに差し替え
+      kujis[0].style.display = 'none';
+      const open = document.createElement('div');
+      open.className = 'kuji-open show';
+      open.style.left = '84px';
+      open.style.top = '40px';
+      open.innerHTML = `<div class="kuji-open-inner">${prize.rank}</div>`;
+      dome.appendChild(open);
+
+      showResult(prize);
+    }, 400);
+  }, 2000);
+}
+
+function showResult(prize) {
+  document.getElementById('resultWaiting').style.display = 'none';
+  document.getElementById('prizeRank').textContent = prize.rank;
+  document.getElementById('prizeName').textContent = prize.name;
+  document.getElementById('resultPrize').classList.add('show');
+  document.getElementById('btnReset').classList.add('show');
+}
+
+function resetDraw() {
+  animIntervals.forEach(iv => clearInterval(iv));
+  animIntervals = [];
+  document.getElementById('btnDraw').disabled = false;
+  document.getElementById('resultWaiting').style.display = 'block';
+  document.getElementById('resultPrize').classList.remove('show');
+  document.getElementById('btnReset').classList.remove('show');
+  createKuji();
+}
+
+createKuji();
+</script>
+</body>
+</html>
